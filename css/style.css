@@ -1,0 +1,918 @@
+/* =========================================================
+   index, header, navbar related
+========================================================= */  
+
+    html {
+        margin: 0;
+        padding: 0;
+        height: 100%;
+    }
+
+    body {
+        margin: 0;
+        padding: 0;
+        height: 100%;
+        overflow: hidden;
+
+        font-family: 'Inter', sans-serif;
+        background-color: #4b444ea6;
+    }
+
+    a {
+        text-decoration: none;
+    }
+
+    .navbar {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        width: auto;
+        height: 70px;
+        display: flex;
+        align-items: center;
+        padding: 0 20px;
+        box-sizing: border-box;
+        background: #ffffffd9;
+        backdrop-filter: blur(10px);
+        box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+        z-index: 2000;
+    }
+
+    .burger-btn {
+        display: none; /* hidden on desktop */
+    }
+
+    .logo {
+        flex: 1;
+        font-size: 20px;
+        font-weight: 600;
+        color: #111;
+    }
+
+    .nav-links {
+        flex: 1;
+        display: flex;
+        justify-content: center;
+        gap: 25px;
+    }
+
+
+    .nav-links {
+        flex: 1;
+        display: flex;
+        justify-content: center;
+        gap: 25px;
+    }
+
+    .nav-links a {
+        position: relative;
+        color: #333;
+        font-weight: bold;
+    }
+
+    .nav-links a:hover {
+        color: #4f46e5;
+    }
+
+    .nav-links a::after {
+        content: "";
+        position: absolute;
+        width: 0%;
+        height: 2px;
+        bottom: -5px;
+        left: 0;
+        background-color: #0b0a27;
+        transition: width 0.3s ease;
+    }
+
+    .nav-links a:hover::after {
+        width: 100%;
+    }
+
+    .connect-wallet {
+        flex: 1;
+        display: flex;
+        justify-content: flex-end;
+    }
+
+    .wallet-btn {
+        background: linear-gradient(135deg, #807b7a, #6a706e);
+        color: black;
+        padding: 10px 22px;
+        border-radius: 12px;
+        font-weight: bold;
+        text-decoration: none;
+        box-shadow: 0 4px 14px rgba(120, 120, 120, 0.9);
+    }
+
+    .wallet-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(120, 120, 120, 1.0);
+    }
+
+    .wallet-btn:active {
+        transform: translateY(0);
+        box-shadow: 0 3px 10px rgba(120, 120, 120, 0.3);
+    }
+
+    .wallet-btn.connected {
+        background: #81a578;
+        background-image: none;
+        box-shadow: 0 4px 14px rgba(132, 168, 123, 0.8);
+    }
+
+    .content {
+        position: fixed;
+        top: 70px;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        overflow-y: auto;
+        overflow-x: hidden;
+    }
+
+    .inputWindow {
+        background: #ffffff;
+        padding: 40px;
+    }
+
+    .feeTier {
+        background: #ffffff;
+        padding: 40px;
+        border-radius: 10px;
+    }
+
+    .app-version {
+        position: fixed;
+        right: 20px;
+        bottom: 8px;
+        font-size: 11px;
+        color: #777;
+        opacity: 0.7;
+        z-index: 9999;
+        pointer-events: none;
+        font-size: 16px;
+    }
+
+/* =========================================================
+   swap related
+========================================================= */  
+    .input-box {
+        max-width: 420px;
+        margin: 40px auto;
+        padding: 20px;
+        background: #111;
+        border-radius: 20px;
+        color: white;
+        font-family: sans-serif;
+    }
+
+    .input-group {
+        background: #1a1a1a;
+        padding: 15px;
+        border-radius: 15px;
+        margin-bottom: 15px;
+    }
+
+    .input-header {
+        display: flex;
+        justify-content: space-between;
+        font-size: 12px;
+        color: #aaa;
+        margin-bottom: 10px;
+    }
+
+    .input-body {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .input-body input {
+        background: transparent;
+        border: none;
+        outline: none;
+        color: white;
+        font-size: 22px;
+        width: 70%;
+        input::-webkit-outer-spin-button,
+        input::-webkit-inner-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+        }
+
+        input::-webkit-outer-spin-button,
+        input::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+    }
+
+    input[readonly] {
+        background-color: #111;
+        color: #888;
+        cursor: not-allowed;
+        pointer-events: none;
+        border-radius: 5px;
+    }
+
+    .token-btn {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        background: #2a2a2a;
+        border: none;
+        padding: 8px 12px;
+        border-radius: 12px;
+        color: white;
+        cursor: pointer;
+    }
+
+    .interact-btn {
+        margin-top: 5px;
+        width: 100%;
+        padding: 15px;
+        background: #c431c9;
+        border: none;
+        border-radius: 12px;
+        color: black;
+        font-size: 24px;
+        cursor: pointer;
+    }
+
+    .interact-btn:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+        background: #555;
+    }
+
+    .interact-btn:hover {
+        opacity: 0.80;
+    }
+
+    .interact-btn:disabled:hover {
+        background: #555;
+    }
+
+    .modal {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0,0,0,0.6);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .hidden {
+        display: none;
+    }
+
+    .modal-content {
+        background: #111;
+        padding: 20px;
+        border-radius: 20px;
+        width: 350px;
+    }
+
+    #tokenList {
+        max-height: 300px;
+        overflow-y: auto;
+    }
+
+    #tokenSearch {
+        width: 100%;
+        padding: 10px;
+        margin-bottom: 10px;
+        background: #1a1a1a;
+        border: none;
+        color: white;
+    }
+
+    .token-item {
+        padding: 10px;
+        cursor: pointer;
+        border-radius: 10px;
+        color: white;
+    }
+
+    .token-item:hover {
+        background: #222;
+    }
+
+    .swap-switch {
+        width: 40px;
+        height: 40px;
+        margin: -20px auto -10px auto;
+        background: #2a2a2a;
+        border-radius: 12px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        cursor: pointer;
+        z-index: 10;
+        color: white;
+        position: relative;
+    }
+
+    .modal {
+        z-index: 1000;
+    }
+
+    .swap-switch:hover {
+        background: #3a3a3a;
+    }
+
+    .slippage-settings {
+        display: flex;
+        justify-content: flex-end;
+        align-items: center;
+        gap: 10px;
+        margin-top: 15px;
+        color: white;
+        justify-content: right;
+    }
+
+    .slippage-settings input {
+        width: 30px; 
+        padding: 8px;
+        border-radius: 10px;
+        border: none;
+        background: #1a1a1a;
+        color: white;
+        justify-items: right;
+    }
+
+
+    .max-btn {
+        margin-left: 8px;
+        color: #c431c9;
+        font-weight: bold;
+        cursor: pointer;
+    }
+
+    .max-btn:hover {
+        opacity: 0.8;
+    }
+
+
+    .import-token {
+        margin-top: 15px;
+        padding-top: 15px;
+        border-top: 1px solid #2a2a2a;
+        display: flex;
+        gap: 10px;
+    }
+
+    .import-token input {
+        flex: 1;
+        padding: 10px;
+        border-radius: 10px;
+        border: none;
+        background: #1a1a1a;
+        color: white;
+        font-size: 14px;
+        outline: none;
+    }
+
+    .import-token input::placeholder {
+        color: #777;
+    }
+
+    .import-token button {
+        padding: 10px 14px;
+        border-radius: 10px;
+        border: none;
+        background: #c431c9;
+        color: black;
+        font-weight: bold;
+        cursor: pointer;
+        transition: 0.2s;
+    }
+
+    .import-token button:hover {
+        opacity: 0.80;
+    }
+
+    .import-token button:active {
+        transform: scale(0.97);
+    }
+
+    .import-hasFee {
+        font-size: 18px;
+        color: #ffffff;
+        margin: 15px 0 8px;
+    }
+
+    .import-hasFee-error {
+        color: #e05252;
+    }
+
+    .import-fee-options {
+        display: flex;
+        gap: 20px;
+        margin-bottom: 15px;
+    }
+
+    .import-fee-options label {
+        color: white;
+        font-size: 14px;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+    }
+
+    .import-fee-options input[type="radio"] {
+        cursor: pointer;
+    }
+
+    .import-warning {
+        font-size: 14px;
+        color: #aaa;
+        margin-top: 5px;
+    }
+    
+    /* swap info panel */
+    .swap-info-panel {
+        background: #1a1a1a;
+        border-radius: 12px;
+        padding: 12px 16px;
+        margin-top: 10px;
+        margin-bottom: 6px;
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+    }
+    
+    .swap-info-panel.hidden {
+        display: none;
+    }
+    
+    .info-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        font-size: 13px;
+    }
+    
+    .info-label {
+        color: #888;
+    }
+    
+    .info-value {
+        color: #ddd;
+        font-weight: 500;
+        text-align: right;
+        max-width: 60%;
+        word-break: break-all;
+    }
+
+
+/* =========================================================
+   TX toast notifications
+========================================================= */
+    #txToastContainer {
+        position: fixed;
+        bottom: 24px;
+        right: 24px;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        z-index: 9999;
+        pointer-events: none;
+    }
+
+    .tx-toast {
+        pointer-events: all;
+        background: #1a1a1a;
+        border: 1px solid #333;
+        border-radius: 14px;
+        padding: 14px 16px;
+        min-width: 240px;
+        max-width: 320px;
+        box-shadow: 0 8px 30px rgba(0,0,0,0.5);
+        animation: toastIn 0.25s ease;
+        transition: opacity 0.3s ease, transform 0.3s ease;
+    }
+
+    .tx-toast-exit {
+        opacity: 0;
+        transform: translateX(30px);
+    }
+
+    @keyframes toastIn {
+        from { opacity: 0; transform: translateX(30px); }
+        to   { opacity: 1; transform: translateX(0); }
+    }
+
+    .tx-toast-top {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 8px;
+    }
+
+    .tx-toast-action {
+        font-weight: 600;
+        font-size: 14px;
+        color: #eee;
+    }
+
+    .tx-toast-close {
+        background: none;
+        border: none;
+        color: #666;
+        font-size: 14px;
+        cursor: pointer;
+        padding: 0;
+        line-height: 1;
+    }
+
+    .tx-toast-close:hover {
+        color: #aaa; 
+    }
+
+    .tx-toast-status {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .tx-toast-dot {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        flex-shrink: 0;
+    }
+
+    .tx-toast-label {
+        font-size: 13px;
+        color: #aaa;
+    }
+
+    /* Pending – pulsing orange dot */
+    .tx-toast-pending .tx-toast-dot {
+        background: #f59e0b;
+        animation: pulse 1.2s ease-in-out infinite;
+    }
+
+    @keyframes pulse {
+        0%, 100% { opacity: 1; transform: scale(1); }
+        50%       { opacity: 0.5; transform: scale(0.8); }
+    }
+
+    .tx-toast-pending {
+        border-color: #f59e0b44; 
+    }
+
+    /* Confirmed – green */
+    .tx-toast-confirmed .tx-toast-dot {
+        background: #81a578; 
+    }
+
+    .tx-toast-confirmed {
+        border-color: #81a57844; 
+    }
+
+    .tx-toast-confirmed .tx-toast-label {
+        color: #81a578; 
+    }
+
+    /* Failed – red */
+    .tx-toast-failed .tx-toast-dot {
+        background: #e05252; 
+    }
+
+    .tx-toast-failed {
+        border-color: #e0525244; 
+    }
+
+    .tx-toast-failed .tx-toast-label {
+        color: #e05252; 
+    }
+
+    .tx-toast-hash {
+        display: block;
+        margin-top: 8px;
+        font-size: 11px;
+        font-family: monospace;
+        color: #666;
+    text-decoration: none;
+    }
+
+    .tx-toast-hash:hover { color: #aaa; }
+
+
+/* =========================================================
+main page
+========================================================= */
+    .main-header {
+        margin-left: 10px;
+    }
+
+    .section-header {
+        margin-left: 10px;
+    }
+
+    .main-notice { 
+        width: 50%;
+        max-width: 900px;
+        margin: 10px ;
+        padding: 30px 9px; 
+        background: #494a4d; 
+        border-radius: 8px;
+    } 
+    
+    .notice-label { 
+        margin-bottom: 20px; 
+        color: #ffc560; 
+        font-size: 14px; 
+        font-weight: 700; 
+        letter-spacing: .12em; 
+        text-transform: uppercase; 
+    }
+
+    .notice-items {
+         display: grid; 
+         gap: 9px; 
+         margin: 24px 0; 
+         padding: 20px 0; 
+         border-top: 2px solid #383838; 
+         font-weight: 700;
+         border-bottom: 2px solid #383838; 
+    }
+
+    .story-section {
+        margin-left: 10px;
+    }
+
+/* =========================================================
+task timeline 
+========================================================= */
+
+    /* positioning */
+    .task-timeline {
+        position: relative;
+        margin-top: 35px;
+        padding: 10px 0 20px 34px;
+    }
+
+    /* nodes */
+    .timeline-item {
+        position: relative;
+        min-height: 40px;
+    }
+
+    /* task */
+    .timeline-content {
+        display: flex;
+        align-items: baseline;
+        gap: 12px;
+        min-height: 18px;
+        width: fit-content;
+        max-width: 50%;
+        padding: 4px 15px;
+        background: #ffffff;
+        border: 1px solid #e0e4e8;
+        border-radius: 6px;
+        font-size: 16px;
+        line-height: 1.5;
+    }
+
+    /* Completed tasks */
+    .timeline-item.completed .timeline-content {
+        background: #64b379;
+        border-color: #4a9963;
+    }
+
+    /* Current task */
+    .timeline-item.next .timeline-content {
+        background: #e9cc7c;
+        border-color: #c4ad75;
+    }
+
+    /* Planned tasks */
+    .timeline-item:not(.completed):not(.next):not(.idea) .timeline-content {
+        background: #aeb5bc;
+        border-color: #929aa3;
+    }
+
+    /* Future ideas */
+    .timeline-item.idea .timeline-content {
+        background: #fffffe;
+        border-color: #ffffff;
+        color: #525252;
+    }
+
+    /* Code */
+    .timeline-content code {
+        color: #343b43;
+    }
+
+    /* Timeline legend */
+    .timeline-legend {
+        display: flex;
+        align-items: center;
+        gap: 22px;
+        margin: 24px 0 28px 38px;
+        font-size: 16px;
+    }
+
+    .legend-item {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .legend-node {
+        width: 25px;
+        height: 25px;
+        border-radius: 50%;
+        border: 1px solid #9da5ad;
+        background: #aeb5bc;
+    }
+
+    /* Completed task */
+    .legend-node.completed {
+        background: #64b379;
+        border-color: #4a9963;
+    }
+
+    /* Current task */
+    .legend-node.current {
+        background: #e9cc7c;
+        border-color: #c4ad75;
+    }
+
+    /* Upcoming tasks */
+    .legend-node.planned {
+        background: #aeb5bc;
+        border-color: #929aa3;
+    }
+
+    /* future ideas */
+    .legend-node.idea {
+        background: #fffffe;
+        border-color: #ffffff;
+    }
+
+
+/* =========================================================
+   Mobile responsive
+========================================================= */
+    .burger-btn {
+        display: none;
+        flex-direction: column;
+        justify-content: center;
+        gap: 5px;
+        background: none;
+        border: none;
+        cursor: pointer;
+        padding: 8px;
+        flex-shrink: 0;
+    }
+
+    .burger-btn span {
+        display: block;
+        width: 22px;
+        height: 2px;
+        background: #111;
+        border-radius: 2px;
+    }
+
+    .mobile-nav {
+        display: none;
+        position: fixed;
+        top: 0; left: 0;
+        width: 100%; height: 100%;
+        background: rgba(17,17,17,0.97);
+        z-index: 3000;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 20px;
+    }
+
+    .mobile-nav.open {
+        display: flex; 
+    }
+
+    .mobile-nav a {
+        color: white;
+        font-size: 22px;
+        font-weight: bold;
+        text-decoration: none;
+        padding: 10px 20px;
+        border-radius: 12px;
+        width: 220px;
+        text-align: center;
+        transition: 0.2s;
+    }
+
+    .mobile-nav a:hover,
+    .mobile-nav a:active {
+        background: #c431c9; color: black; 
+    }
+
+    .mobile-nav-close {
+        position: absolute;
+        top: 18px; right: 20px;
+        background: none;
+        border: none;
+        color: #aaa;
+        font-size: 28px;
+        cursor: pointer;
+    }
+
+    .mobile-nav-close:hover { color: white; }
+
+    @media (max-width: 768px) {
+
+        /* Navbar: [burger][logo][wallet] – all in flow, no absolute */
+        .navbar {
+            padding: 0 8px;
+            gap: 0;
+        }
+
+        .logo {
+            flex: 3;
+            text-align: center;
+        }
+
+        .nav-links { display: none; }
+
+        .burger-btn {
+            flex: 1;
+            display: flex;
+            justify-content: flex-start;
+        }
+
+        .connect-wallet {
+            flex: 1; 
+            display:flex;
+            justify-content: flex-end;
+        }
+
+        .wallet-btn {
+            padding: 7px 8px;
+            font-size: 11px;
+            font-weight: bold;
+            border-radius: 10px;
+            white-space: nowrap;
+            
+            overflow: hidden;
+            text-overflow: ellipsis;
+            box-shadow: none;
+            text-decoration: none;
+        }
+
+        /* Content */
+        .content {
+            top: 70px;
+            padding: 12px;
+        }
+
+        .input-box {
+            max-width: 100%;
+            margin: 12px 0;
+            padding: 16px;
+            border-radius: 16px;
+            box-sizing: border-box;
+        }
+
+        .token-btn { padding: 10px 12px; font-size: 14px; min-height: 44px; }
+        .interact-btn { padding: 16px; font-size: 20px; min-height: 52px; }
+
+        .modal-content {
+            width: 92vw;
+            max-width: 440px;
+            padding: 16px;
+            box-sizing: border-box;
+        }
+
+        .swap-switch { width: 44px; height: 44px; }
+
+        .slippage-settings input { width: 50px; padding: 8px; font-size: 15px; }
+
+        #txToastContainer { bottom: 12px; right: 12px; left: 12px; }
+        .tx-toast { min-width: unset; max-width: 100%; }
+
+        .token-item { padding: 13px 10px; font-size: 15px; }
+        .import-token input,
+        .import-token button { min-height: 44px; font-size: 15px; }
+    
+
+    /* timeline */
+        .timeline-content {
+            max-width: 100%;
+        }
+    }
+
+    /* main*/
+    .main-notice {
+        width: 100%;
+    }
