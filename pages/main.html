@@ -1,0 +1,206 @@
+<script>
+    if (window.location.pathname.includes("main.html")) {
+        window.location.href = "./index.html#/";
+    }
+</script>
+
+<div class="main-page">
+
+    <header class="main-header">
+        <h1>General information</h1>
+        
+        <p>
+            A community-built frontend for accessing the VanillaSwap smart contracts on DMC.
+        </p>
+    </header>
+
+
+    <section class="main-notice">
+        <div class="notice-label">Please read before using</div>
+
+        <div class="notice-items">
+            <div>This is not a financial tool. It is an interface to the already existing VanillaSwap smart contracts on the DMC.</div>
+            <div>Use at your own risk.</div>
+            <div>Check the contracts you are giving approvals to.</div>
+            <div>Start with testing small amounts.</div>
+            <div>Check the code before using.</div>
+            <div>Help me test edge cases and give feedback about errors, optimizations or new ideas.</div>
+        </div>
+    </section>
+
+
+    <section class="main-section">
+        <div class="section-header">
+            <div>
+                <h2>Tasks</h2>
+            </div>
+
+            <p>
+                Completed tasks, current work and planned features.
+            </p>
+        </div>
+
+
+
+        
+        <div class="timeline-legend">
+            <div class="legend-item">
+                <span class="legend-node completed"></span>
+                <span>Completed</span>
+            </div>
+
+            <div class="legend-item">
+                <span class="legend-node current"></span>
+                <span>Current</span>
+            </div>
+
+            <div class="legend-item">
+                <span class="legend-node planned"></span>
+                <span>Planned</span>
+            </div>
+
+            <div class="legend-item">
+                <span class="legend-node idea"></span>
+                <span>Future ideas</span>
+            </div>
+        </div>
+
+        <div class="task-timeline">
+
+            <!-- COMPLETED -->
+
+            <div class="timeline-item completed">
+                <div class="timeline-content">
+                    <span>Centralize decimals</span>
+                </div>
+            </div>
+
+            <div class="timeline-item completed">
+                <div class="timeline-content">
+                    <span>Update quotes at all possible inputs</span>
+                </div>
+            </div>
+
+            <div class="timeline-item completed">
+                <div class="timeline-content">
+                    <span>
+                        New token characteristic for import fee:
+                        <code>hasFee</code> / <code>!hasFee</code>
+                    </span>
+                </div>
+            </div>
+
+            <div class="timeline-item completed">
+                <div class="timeline-content">
+                    <span>Implement version</span>
+                </div>
+            </div>
+
+            <div class="timeline-item completed">
+                <div class="timeline-content">
+                    <span>Fix transaction toast</span>
+                </div>
+            </div>
+            
+            <div class="timeline-item completed">
+                <div class="timeline-content">
+                    <span>Finalize code for readability and comments</span>
+                </div>
+            </div>
+
+            <div class="timeline-item completed">
+                <div class="timeline-content">
+                    <span>Finish new swap</span>
+                </div>
+            </div>
+
+            <div class="timeline-item completed">
+                <div class="timeline-content">
+                    <span>Loading states</span>
+                </div>
+            </div>
+
+            <!-- CURRENT / OPEN -->
+            <div class="timeline-item next">
+                <div class="timeline-content">
+                    <span>Implement on GitHub</span>
+                </div>
+            </div>
+            
+            <div class="timeline-item">
+                <div class="timeline-content">
+                    <span>Centralize token import for swap and liquidity pages</span>
+                </div>
+            </div>
+
+            <div class="timeline-item">
+                <div class="timeline-content">
+                    <span>Import V2 pools of own wallet</span>
+                </div>
+            </div>
+
+            <div class="timeline-item">
+                <div class="timeline-content">
+                    <span>Create or add to existing V2 pools</span>
+                </div>
+            </div>
+
+            <div class="timeline-item">
+                <div class="timeline-content">
+                    <span>Decrase V2 pools liquidity</span>
+                </div>
+            </div>
+
+            <div class="timeline-item">
+                <div class="timeline-content">
+                    <span>Import V3 positions of own wallet</span>
+                </div>
+            </div>
+
+            <div class="timeline-item">
+                <div class="timeline-content">
+                    <span>Create V3 positions or add to existing V3 positions</span>
+                </div>
+            </div>
+
+            <div class="timeline-item">
+                <div class="timeline-content">
+                    <span>Claim V3 fees</span>
+                </div>
+            </div>
+
+            <div class="timeline-item">
+                <div class="timeline-content">
+                    <span>Decrase V3 pools liquidity</span>
+                </div>
+            </div>
+
+
+            <!-- OPTIONAL / FUTURE -->
+            <div class="timeline-item idea">
+                <div class="timeline-content">
+                    <span>Donations page for projects</span>
+                </div>
+            </div>
+
+            <div class="timeline-item idea">
+                <div class="timeline-content">
+                    <span>Tutorials for using the page</span>
+                </div>
+            </div>
+
+            <div class="timeline-item idea">
+                <div class="timeline-content">
+                    <span>Approval revoker for outstanding token approvals in smart contracts</span>
+                </div>
+            </div>
+
+            <div class="timeline-item idea">
+                <div class="timeline-content">
+                    <span>
+                        Comparison / primitive arbitrage route checker between DMC and DVM
+                    </span>
+                </div>
+            </div>
+        </div>
+</div>

@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="de">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../css/style.css">
+    <title>Main</title>
+  </head>
+
+  <!-- Header -->
+  <body>
+    <header class="navbar">
+        <!-- Burger button for mobile -->
+        <button class="burger-btn" id="burgerBtn" aria-label="Open menu">
+          <span></span><span></span><span></span>
+        </button>
+        
+        <!-- Logo -->
+        <div class="logo">DEX access</div>
+        
+        <!-- Page links -->
+        <nav class="nav-links">
+          <a href="#/main">Main</a>
+          <a href="#/swap">Swap</a>
+        </nav>
+
+        <!-- Connect wallet button -->
+        <nav class="connect-wallet">
+          <button id="walletButton" class="wallet-btn">
+            Connect Wallet
+          </button>
+        </nav>
+    </header>
+
+    <!-- Content -->
+    <main id="content" class="content">
+    
+    </main>
+
+    <!-- version number -->
+    <div id="appVersion" class="app-version"></div>
+
+
+    <!-- Mobile nav overlay -->
+    <nav class="mobile-nav" id="mobileNav">
+      <!-- Close button for overlay -->
+      <button class="mobile-nav-close" id="mobileNavClose" aria-label="Close menu">✕</button>
+
+      <!-- Page links mobile -->
+      <a href="#/main"         onclick="closeMobileNav()">Main</a>
+      <a href="#/swap"      onclick="closeMobileNav()">V2 Swap</a>
+    </nav>
+
+    <!-- Close nav overlay -->
+    <script>
+      function closeMobileNav() {
+        document.getElementById("mobileNav").classList.remove("open");
+      }
+      document.addEventListener("DOMContentLoaded", function() {
+        document.getElementById("burgerBtn").addEventListener("click", function() {
+          document.getElementById("mobileNav").classList.add("open");
+        });
+        document.getElementById("mobileNavClose").addEventListener("click", closeMobileNav);
+      });
+    </script>
+
+    <!-- Initialize page routing -->
+    <script type="module" src="../src/utils/pageRouter.js"></script>
+    
+  </body>
+</html>
