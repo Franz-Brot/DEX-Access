@@ -638,7 +638,7 @@ main page
 
     .notice-items {
          display: grid; 
-         gap: 9px; 
+         gap: 12px; 
          margin: 24px 0; 
          padding: 20px 0; 
          border-top: 2px solid #383838; 
@@ -664,7 +664,11 @@ task timeline
     /* nodes */
     .timeline-item {
         position: relative;
-        min-height: 40px;
+        margin-bottom: 4px;
+    }
+
+    .timeline-item:last-child {
+        margin-bottom: 0;
     }
 
     /* task */
@@ -716,8 +720,9 @@ task timeline
     /* Timeline legend */
     .timeline-legend {
         display: flex;
+        flex-wrap: wrap;
         align-items: center;
-        gap: 22px;
+        gap: 12px 22px;
         margin: 24px 0 28px 38px;
         font-size: 16px;
     }
@@ -914,5 +919,7 @@ task timeline
 
     /* main*/
     .main-notice {
-        width: 100%;
+        width: calc(100% - 20px);
+        margin: 10px auto 75px auto;
+        box-sizing: border-box;
     }
