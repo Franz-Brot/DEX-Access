@@ -1,7 +1,3 @@
-/** Latest changes:
- * 
- */
-
 import { ethers } from "../utils/ethers.esm.min.js";
 import { V3_Factory, V3_Quoter } from "../config/contracts.js";
 

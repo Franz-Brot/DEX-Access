@@ -1,7 +1,3 @@
-/** Latest changes:
- *  added name, symbol, decimals to V2_Pair_ABI
- */
-
 // Common wallet and blockchain info
 export const ERC20_ABI = [
     "function approve(address,uint256) returns(bool)",

@@ -1,8 +1,3 @@
-/** Latest changes:
- * centralized V2 function getPair in v2_functions for use in swap, pools and portfolio
- */
-
-
 import { ethers } from "../utils/ethers.esm.min.js";
 import { V2_Router } from "../config/contracts.js";
 import { getV2PairAddress } from "../utils/v2_functions.js";
