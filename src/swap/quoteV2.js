@@ -1,5 +1,11 @@
+/** Latest changes:
+ * centralized V2 function getPair in v2_functions for use in swap, pools and portfolio
+ */
+
+
 import { ethers } from "../utils/ethers.esm.min.js";
-import { V2_Factory, V2_Router } from "../config/contracts.js";
+import { V2_Router } from "../config/contracts.js";
+import { getV2PairAddress } from "../utils/v2_functions.js";
 
 
 // Quote v2
@@ -8,14 +14,14 @@ export async function quoteV2(
     tokenOut,
     amountIn
 ) {
-    // find v2 pool
-    const pool = await V2_Factory.getPair(
+    // find v2 pairAddress
+    const pairAddress = await getV2PairAddress(
         tokenIn.address,
         tokenOut.address
     );
 
     
-    if (pool === ethers.constants.AddressZero)
+    if (pairAddress === ethers.constants.AddressZero)
         return null;
     try {
         // await quote from v2 router
@@ -32,7 +38,7 @@ export async function quoteV2(
         return {
             protocol: "V2",
             fee: null,
-            pool,
+            pairAddress,
             tokenIn,
             tokenOut,
             amountIn,
