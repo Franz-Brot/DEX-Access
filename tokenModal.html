@@ -1,0 +1,62 @@
+<!--  Latest changes:
+* centralized tokenModal for using in liquidity as well, added from swap.html
+-->
+
+  <!-- Rerouting to index, when loading swap directly -->
+<script>
+  if (window.location.pathname.includes("tokenModal.html")) {
+    window.location.href = "./index.html#/";
+  }
+</script>
+
+
+  
+  <!-- Token Modal for token selection and token import -->
+  <div id="tokenModal" class="modal hidden">
+    <div class="modal-content">
+
+      <!-- Search input field -->
+      <input type="text" id="tokenSearch" placeholder="Searching tokens..." />
+      
+      <!-- Token list, defaults and imported -->
+      <div id="tokenList"></div>
+
+
+      <!-- Input for new token import -->
+      <div class="import-token">
+        <input 
+        type="text" 
+          id="tokenAddressInput" 
+          placeholder="Token address (0x...)" 
+        /> 
+      
+        <!-- Token import button -->
+      <button id="importTokenBtn">Import</button>
+        
+      <!-- Radio buttons for fee-on-transfer prompt; fee-on-transfer Tokens like CFR, DTL, TAX can not be used in v3  -->
+      </div>
+      <p class="import-hasFee">
+        Token has Fee-on-transfer?
+      </p>
+
+      <div class="import-fee-options">
+        <label>
+          <input type="radio" name="import-tokenFeeRadio" value="true">
+          Yes
+        </label>
+
+        <label>
+          <input type="radio" name="import-tokenFeeRadio" value="false">
+          No
+        </label>
+      </div>
+
+
+      <!-- Import warning -->
+      <p class="import-warning">
+          ⚠️ Only import trusted tokens
+      </p>
+
+    </div>
+  </div>
+</div>
