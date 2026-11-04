@@ -1,3 +1,10 @@
+<!--  Latest changes:
+* centralized tokenModal for using in liquidity as well, removed it from swap.html 
+* changed default balance from 0.00 to 0, because it is set to 0 in swapstate anyway
+* added container elements to have same layout on swap and pool page
+* added div classes ".input-group.swap.tokenIn input" and ".input-group.swap.tokenOut input" for distinguishing between swap input and output
+-->
+
 <!-- Rerouting to index, when loading swap directly -->
 <script>
   if (window.location.pathname.includes("swap.html")) {
@@ -8,140 +15,98 @@
 <!-- Swap page -->
 <div id="swapPage">
 
-  <!-- Swap input -->
-  <div class="input-box">
-
-    <!-- FROM Token/ Token A -->
-    <div class="input-group">
-      <div class="input-header">
-        
-        <span>Sell</span>
-
-        <!-- FROM token wallet balance -->
-        <span class="balance" id="balanceIn">
-          Balance: 0.00 <span class="max-btn max-btn-swap">MAX</span>
-        </span>
-      </div>
-
-      <!-- FROM token input field -->
-      <div class="input-body">
-        <input class="swap-input" type="text" maxlength="19" placeholder="0.00000000" />
-        
-        <!-- FROM token selection -->
-        <button class="token-btn">
-          Token A ▼
-        </button>
-      </div>
-    </div>
-
-  <!-- Button to switch Token A and B -->  
-  <button class="swap-switch">
-    ⇅
-  </button>
-
-    <!-- TO token/ Token B-->
-    <div class="input-group">
-      <div class="input-header">
-
-        <span>Buy</span>
-
-        <!-- TO token wallet balance -->
-        <span class="balance" id="balanceOut">
-          Balance: 0.00</span>
-
-      </div>
-
-      <!-- TO token output field, readonly -->
-      <div class="input-body">
-        <input type="text" placeholder="0.00000000" readonly />
-
-        <!-- TO token selection -->
-        <button class="token-btn">
-          Token B ▼
-        </button>
-      </div>
-    </div>
     
-    <!-- Slippage input -->
-    <div class="slippage-settings">
-      <label>Slippage (%)</label>
-      <input type="text" id="slippageInput" value="0.5" step="0.1" min="0" />
-    </div>
-
-    <!-- Info Panel -->
-    <div class="swap-info-panel hidden">
-
-      <!-- Average price based on current quote excluding fee-on-transer/ Ecosystem fees -->
-      <div class="info-row">
-        <span class="info-label">Avg. Price</span>
-        <span id="executionPrice" class="info-value">—</span>
-      </div>
-
-      <!-- Minimum received based on slippage-->
-      <div class="info-row">
-          <span class="info-label">Min. received</span>
-          <span id="minimumReceived" class="info-value">—</span>
-      </div>
-
-      <!-- Route display for which pool is used -->
-      <div class="info-row">
-        <span class="info-label">Route</span>
-        <span id="swapRoute" class="info-value">—</span>
-      </div>
-    </div>
-
-    <!-- Interact button-->
-    <button class="interact-btn swap">Swap</button>
-
-  </div>
+    <!-- Space for same layout as pool-->
+    <div class="version-switch-container"></div>
 
 
-  <!-- Token Modal for token selection and token import -->
-  <div id="tokenModal" class="modal hidden">
-    <div class="modal-content">
+    <!-- Swap input -->
+    <div class="input-box">
 
-      <!-- Search input field -->
-      <input type="text" id="tokenSearch" placeholder="Searching tokens..." />
-      
-      <!-- Token list, defaults and imported -->
-      <div id="tokenList"></div>
+        <!-- FROM Token/ Token A -->
+        <div class="input-group swap tokenIn">
+        <div class="input-header">
+            
+            <span>Sell</span>
+
+            <!-- FROM token wallet balance -->
+            <div class="balance-container balanceIn">
+                <span class="balance">Balance: 0</span>
+                <span class="max-btn max-btn-swap">MAX</span>
+            </div>
+        </div>
+
+        <!-- FROM token input field -->
+        <div class="input-body">
+            <input class="swap-input" type="text" maxlength="19" placeholder="0.00000000" />
+            
+            <!-- FROM token selection -->
+            <button class="token-btn">
+                Token A ▼
+            </button>
+        </div>
+        </div>
+
+    <!-- Button to switch Token A and B -->  
+
+        <button class="swap-switch">⇅</button>
 
 
-      <!-- Input for new token import -->
-      <div class="import-token">
-        <input 
-        type="text" 
-          id="tokenAddressInput" 
-          placeholder="Token address (0x...)" 
-        /> 
-      
-        <!-- Token import button -->
-      <button id="importTokenBtn">Import</button>
+        <!-- TO token/ Token B-->
+        <div class="input-group swap tokenOut">
+        <div class="input-header">
+
+            <span>Buy</span>
+
+            <div class="balance-container balanceOut">
+                <span class="balance">Balance: 0</span>
+                <span class="max-btn max-btn-swap hidden">MAX</span>
+            </div>
+
+        </div>
+
+        <!-- TO token output field, readonly -->
+        <div class="input-body">
+            <input type="text" placeholder="0.00000000" readonly />
+
+            <!-- TO token selection -->
+            <button class="token-btn">
+                Token B ▼
+            </button>
+        </div>
+        </div>
         
-      <!-- Radio buttons for fee-on-transfer prompt; fee-on-transfer Tokens like CFR, DTL, TAX can not be used in v3  -->
-      </div>
-      <p class="import-hasFee">
-        Token has Fee-on-transfer?
-      </p>
+        <!-- Slippage input -->
+        <div class="slippage-settings">
+            <label>Slippage (%)</label>
+            <input type="text" id="slippageInput" value="0.5" step="0.1" min="0" />
+        </div>
 
-      <div class="import-fee-options">
-        <label>
-          <input type="radio" name="import-tokenFeeRadio" value="true">
-          Yes
-        </label>
+        <!-- Info Panel -->
+        <div class="swap-info-panel hidden">
 
-        <label>
-          <input type="radio" name="import-tokenFeeRadio" value="false">
-          No
-        </label>
-      </div>
+        <!-- Average price based on current quote excluding fee-on-transer/ Ecosystem fees -->
+        <div class="info-row">
+            <span class="info-label">Avg. Price</span>
+            <span id="executionPrice" class="info-value">—</span>
+        </div>
 
+        <!-- Minimum received based on slippage-->
+        <div class="info-row">
+            <span class="info-label">Min. received</span>
+            <span id="minimumReceived" class="info-value">—</span>
+        </div>
 
-      <!-- Import warning -->
-      <p class="import-warning">
-          ⚠️ Only import trusted tokens
-      </p>
-
+        <!-- Route display for which pool is used -->
+        <div class="info-row">
+            <span class="info-label">Route</span>
+            <span id="swapRoute" class="info-value">—</span>
+        </div>
     </div>
-  </div>
+
+        <!-- Interact button-->
+        <button class="interact-btn swap">Swap</button>
+
 </div>
+
+
