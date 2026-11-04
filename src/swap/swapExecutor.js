@@ -1,3 +1,8 @@
+/** Latest changes:
+ * added swapstate.txStatus = "approving" and "swapping" for swap button updates in executeswap
+ * updated executeswap and approveIfNeeded
+ */
+
 import { DefaultDeadline, nativeAddress, V2_ROUTER_Address, V3_ROUTER_Address, WNATIVE } from "../config/constants.js";
 import { V2_Router, V3_Router } from "../config/contracts.js";
 import { approveToken, showTxToast, updateTxToast } from "../utils/utils.js";
@@ -21,82 +26,72 @@ export async function executeSwap() {
     if (!route)
         throw new Error("No route.");
 
-
     // if approval needed -> approve first
     if (swapState.needsApproval) {
+        await approveIfNeeded(route);
+        await refreshAllowance();
+        renderSwap();
+        return;
+    }
+
+    let tx;
 
     try {
-        await approveIfNeeded(route);
+        swapState.txStatus = "swapping";
+        renderSwap();
+
+        // route to dedicated v2 or v3 functions
+        switch (route.protocol) {
+            case "V2":
+                tx = await executeV2(route);
+                break;
+
+            case "V3":
+                tx = await executeV3(route);
+                break;
+
+            default:
+                throw new Error(`Unknown protocol: ${route.protocol}`);
+        }
+
+        // tx signed and sent
+        const toastId = showTxToast({
+            action: `Swap ${route.tokenIn.symbol} → ${route.tokenOut.symbol}`,
+            hash: tx.hash
+        });
+
+        // wait for confirmation
+        try {
+            await tx.wait();
+
+            updateTxToast(toastId, {
+                status: "confirmed",
+                hash: tx.hash
+            });
+
+        } catch (error) {
+            updateTxToast(toastId, {
+                status: "failed",
+                hash: tx.hash
+            });
+
+            throw error;
+        }
+
+        return tx;
 
     } catch (error) {
+        console.error("Swap failed:", error);
         throw error;
+
+    } finally {
+        swapState.txStatus = "idle";
+
+        await refreshBalances();
+        await refreshAllowance();
+
+        renderSwap();
     }
-
-    await refreshAllowance();
-
-    renderSwap();
-    return;
-}
-
-let tx;
-
-// route to dedicated v2 or v3 functions in swapExecutor.js
-try {
-    switch (route.protocol) {
-        case "V2":
-            tx = await executeV2(route);
-            break;
-
-        case "V3":
-            tx = await executeV3(route);
-            break;
-
-        default:
-            throw new Error(
-                `unknown protocol: ${route.protocol}`
-            );
-    }
-
-} catch (error) {
-
-    console.error("Swap failed:", error);
-    throw error;
-}
-
-
-// tx signed and sent
-const toastId = showTxToast({
-    action: `Swap ${route.tokenIn.symbol} → ${route.tokenOut.symbol}`,
-    hash: tx.hash
-});
-
-
-// waiting for confirmed or failed tx
-try {
-
-    await tx.wait();
-
-    updateTxToast(toastId, {
-        status: "confirmed",
-        hash: tx.hash
-    });
-
-} catch (error) {
-
-    updateTxToast(toastId, {
-        status: "failed",
-        hash: tx.hash
-    });
-
-    throw error;
-}
-
-    //refresh and rerender
-    await refreshBalances();
-    await refreshAllowance();
-    renderSwap();
-
-    return tx;
 }
 
 
@@ -286,9 +281,8 @@ async function approveIfNeeded(route) {
         throw new Error("No viable swap route.");
     }
 
-
     // no approval for native needed
-    if (tokenIn.address === nativeAddress) {
+    if (route.tokenIn.address === nativeAddress) {
         return;
     }
 
@@ -305,52 +299,53 @@ async function approveIfNeeded(route) {
             break;
 
         default:
-            throw new Error(
-                `Unknown protocol: ${route.protocol}`
-            );
+            throw new Error(`Unknown protocol: ${route.protocol}`);
     }
-
 
     // return if already approved
     if (!swapState.needsApproval) {
         return;
     }
 
-    // approve
-    const tx = await approveToken(
-    route.tokenIn,
-    spender,
-    route.amountIn
-);
+    try {
+        swapState.txStatus = "approving";
+        renderSwap();
 
+        const tx = await approveToken(
+            route.tokenIn,
+            spender,
+            route.amountIn
+        );
 
-if (!tx) {
-    throw new Error("Error on approval, no transaction sent.");
-}
+        if (!tx) {
+            throw new Error("Error on approval, no transaction sent.");
+        }
 
+        const toastId = showTxToast({
+            action: `Approve ${route.tokenIn.symbol}`,
+            hash: tx.hash
+        });
 
-// update interact button text to "approve"
-const toastId = showTxToast({
-    action: `Approve ${tokenIn.symbol}`,
-    hash: tx.hash
-});
+        try {
+            await tx.wait();
 
-// wait for approval and refresh toast
-try {
-    await tx.wait();
+            updateTxToast(toastId, {
+                status: "confirmed",
+                hash: tx.hash
+            });
 
-    updateTxToast(toastId, {
-        status: "confirmed",
-        hash: tx.hash
-    });
+        } catch (error) {
 
-} catch (error) {
+            updateTxToast(toastId, {
+                status: "failed",
+                hash: tx.hash
+            });
 
-    updateTxToast(toastId, {
-        status: "failed",
-        hash: tx.hash
-    });
+            throw error;
+        }
 
-    throw error;
-}
+    } finally {
+        swapState.txStatus = "idle";
+        renderSwap();
+    }
 }

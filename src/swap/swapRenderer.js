@@ -1,9 +1,24 @@
+/** Latest changes:
+ * truncate decimals correctly when using max button
+ * added not enough balance option for swap button
+ * added weird div classes ".input-group.swap.swap-input input" and ".input-group.swap.swap-output input" for distinguishing between swap and pool
+ * added swapPage identifier to not have multiple listeners with new pages 
+ * removed unused imports
+ * added unique eventListeners only for swap page
+ * interact button for swap now active, when slippage = 0%, added "select token" to renderSwapBTN
+ * removed if in renderAmounts, when there is no route for swapping from output field to swap button (No liquidity available)
+ * 
+*/
+
 import { swapState } from "./swapState.js";
 import { openTokenModal } from "../utils/tokenModal.js";
 import { truncateDecimals } from "../utils/utils.js";
 import { setSlippage, switchTokens } from "./swapCore.js";
-import { percentDecimals } from "../config/constants.js";
+import { displayDecimals } from "../config/constants.js";
 import { userAddress } from "../utils/wallet.js";
+
+
+
 
 
 // Main render
@@ -22,7 +37,7 @@ export function renderSwap() {
 // Render token button selection input and output
 function renderTokens() {
     const tokenButtons =
-        document.querySelectorAll(".input-group .token-btn");
+        getSwapElements(".input-group .token-btn");
 
     const tokenInButton = tokenButtons[0];
     const tokenOutButton = tokenButtons[1];
@@ -45,18 +60,15 @@ function renderTokens() {
 }
 
 
-// render Balances
+// render balances
 function renderBalances() {
     const balanceIn =
-        document.getElementById("balanceIn");
+        getSwapElement(".balanceIn");
 
     const balanceOut =
-        document.getElementById("balanceOut");
+        getSwapElement(".balanceOut");
 
     if (balanceIn) {
-        const maxButton =
-            balanceIn.querySelector(".max-btn-swap");
-
         const value =
             swapState.balanceInLoading
                 ? "Loading..."
@@ -64,11 +76,11 @@ function renderBalances() {
                     swapState.balanceIn || 0
                 );
 
-        balanceIn.childNodes[0].textContent =
-            `Balance: ${value} `;
+        // Only change balance amt
+        const balanceText = balanceIn.querySelector(".balance");
 
-        if (maxButton) {
-            balanceIn.appendChild(maxButton);
+        if (balanceText) {
+            balanceText.textContent = `Balance: ${value}`;
         }
     }
 
@@ -80,8 +92,11 @@ function renderBalances() {
                     swapState.balanceOut || 0
                 );
 
-        balanceOut.textContent =
-            `Balance: ${value}`;
+        const balanceText = balanceOut.querySelector(".balance");
+
+        if (balanceText) {
+            balanceText.textContent = `Balance: ${value}`;
+        }
     }
 }
 
@@ -90,13 +105,13 @@ function renderBalances() {
 // render input amounts
 function renderAmounts() {
     const inputIn =
-        document.querySelector(
-            ".input-group:first-of-type .swap-input"
+        getSwapElement(
+            ".input-group.swap.tokenIn input"
         );
 
     const inputOut =
-        document.querySelector(
-            ".input-group:nth-of-type(2) input"
+        getSwapElement(
+            ".input-group.swap.tokenOut input"
         );
 
     // FROM token amount
@@ -113,15 +128,6 @@ function renderAmounts() {
 
         } else if (swapState.inputOut) {
             inputOut.value = truncateDecimals(swapState.inputOut);
-        
-        // no route or liquidity
-        } else if (
-            swapState.tokenIn &&
-            swapState.tokenOut &&
-            swapState.inputIn &&
-            !swapState.bestRoute
-        ) {
-            inputOut.value = "No liquidity available";
 
         } else {
             inputOut.value = "";
@@ -133,10 +139,10 @@ function renderAmounts() {
 // Render route
 function renderRoute() {
     const routeElement =
-        document.getElementById("swapRoute");
+        getSwapElement("#swapRoute");
 
     const infoPanel =
-        document.querySelector(".swap-info-panel");
+        getSwapElement(".swap-info-panel");
 
     if (!routeElement || !infoPanel)
         return;
@@ -175,7 +181,7 @@ function renderRoute() {
 // render minimum received amount in info panel
 function renderMinimumReceived() {
     const element =
-        document.getElementById("minimumReceived");
+        getSwapElement("#minimumReceived");
 
     if (!element)
         return;
@@ -194,7 +200,7 @@ function renderMinimumReceived() {
 function renderExecutionPrice() {
 
     const element =
-        document.getElementById("executionPrice");
+        getSwapElement("#executionPrice");
 
     if (!element)
         return;
@@ -213,14 +219,42 @@ function renderExecutionPrice() {
 function renderSwapBtn() {
 
     const button =
-        document.querySelector(".interact-btn.swap");
+        getSwapElement(".interact-btn.swap");
+
 
     if (!button) return;
 
+    // approving
+    if (swapState.txStatus === "approving") {
+        button.textContent = "Approving...";
+        button.disabled = true;
+        return;
+    }
+    // swapping
+    if (swapState.txStatus === "swapping") {
+        button.textContent = "Swapping...";
+        button.disabled = true;
+        return;
+    }
 
-    // when wallet not connected, change button text from swap to connect
+    // wallet not connected
     if (!userAddress) {
-        button.textContent = "Connect wallet first";
+        button.textContent = "Connect wallet";
+        button.disabled = true;
+        return;
+    }
+
+    // missing token selection
+    if (!swapState.tokenIn || !swapState.tokenOut) {
+        button.textContent = "Select tokens";
+        button.disabled = true;
+        return;
+    }
+
+
+    // no route available
+    if (!swapState.bestRoute && swapState.tokenIn &&  swapState.inputIn && swapState.tokenOut) {
+        button.textContent = "No liquidity available";
         button.disabled = true;
         return;
     }
@@ -231,7 +265,9 @@ function renderSwapBtn() {
         !swapState.tokenIn ||
         !swapState.tokenOut ||
         !swapState.inputIn ||
-        !swapState.slippage;
+        swapState.slippage == null ||
+        !Number.isFinite(Number(swapState.slippage)) ||
+        Number(swapState.slippage) < 0;
 
     if (inputMissing) {
         button.textContent = "Swap";
@@ -240,7 +276,7 @@ function renderSwapBtn() {
     }
 
 
-    // when input token amount not yet approved, change button text from swap to approve
+    // missing approval
     if (swapState.needsApproval) {
         button.textContent =
             `Approve ${swapState.tokenIn?.symbol || ""}`;
@@ -249,6 +285,14 @@ function renderSwapBtn() {
         return;
     }
 
+    //not enough balance
+    if (swapState.inputIn>swapState.balanceIn) {
+        button.textContent =
+            `Not enough ${swapState.tokenIn?.symbol || ""} balance`;
+
+        button.disabled = true;
+        return;
+    }
 
     // swap (default button text)
     button.textContent = "Swap";
@@ -260,11 +304,24 @@ function renderSwapBtn() {
 function renderStatus() {
 
     const status =
-        document.getElementById("txStatus");
+        getSwapElement("txStatus");
     if (!status)
         return;
     status.textContent =
         swapState.txStatus;
+}
+
+// for eventListeners
+function getSwapPage() {
+    return document.getElementById("swapPage");
+}
+
+function getSwapElement(selector) {
+    return getSwapPage()?.querySelector(selector) ?? null;
+}
+
+function getSwapElements(selector) {
+    return getSwapPage()?.querySelectorAll(selector) ?? [];
 }
 
 
@@ -272,28 +329,28 @@ function renderStatus() {
 export function initSwapEvents() {
 
     const inputIn =
-        document.querySelector(".input-group:first-of-type .swap-input");
+        getSwapElement(".input-group.swap.tokenIn input");
 
     const tokenButtons =
-        document.querySelectorAll(".input-group .token-btn");
+        getSwapElements(".input-group .token-btn");
 
     const maxButton =
-        document.querySelector(".max-btn-swap");
+        getSwapElement(".max-btn-swap");
 
     const slippageInput =
-        document.getElementById("slippageInput");
+        getSwapElement("#slippageInput");
 
     const swapButton =
-        document.querySelector(".interact-btn.swap");
+        getSwapElement(".interact-btn.swap");
 
     const importTokenButton =
-        document.getElementById("importTokenBtn");
+        getSwapElement("importTokenBtn");
 
     const tokenAddressInput =
-        document.getElementById("tokenAddressInput");
+        getSwapElement("tokenAddressInput");
 
     const swapSwitchButton =
-        document.querySelector(".swap-switch");
+        getSwapElement(".swap-switch");
 
 
     // FROM Token
@@ -336,8 +393,7 @@ export function initSwapEvents() {
             return;
             if (!swapState.balanceIn)
                 return;
-            swapState.inputIn =
-                swapState.balanceIn;
+            swapState.inputIn = truncateDecimals(swapState.balanceIn, displayDecimals);
             renderAmounts();
             if (
                 typeof swapState.onInputIn === "function"

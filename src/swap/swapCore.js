@@ -1,27 +1,35 @@
+/** Latest changes:
+ * centralized token modal by adding loadTokenModal, handleSwapTokenSelected
+ * removed setTokenIn und setTokenOut
+ * removed unused imports
+ * centralized refresh balances ,
+ * added handleSwapWalletConnected for only one eventlistener for wallet connection
+ */
+
+
 import { ethers } from "../utils/ethers.esm.min.js";
 import { swapState, resetSwapState } from "./swapState.js";
 import { initSwapEvents, renderSwap } from "./swapRenderer.js";
 import { getQuotes } from "./quoteEngine.js";
-import { checkApproval, approveToken, truncateDecimals, showTxToast, updateTxToast, sanitizeNumberInput} from "../utils/utils.js";
-import { displayDecimals, nativeAddress, percentDecimals, V2_ROUTER_Address, V3_ROUTER_Address, WNATIVE } from "../config/constants.js";
-import { userAddress, userBalance} from "../utils/wallet.js";
+import { checkApproval, truncateDecimals, sanitizeNumberInput} from "../utils/utils.js";
+import { displayDecimals, nativeAddress, percentDecimals, V2_ROUTER_Address, V3_ROUTER_Address } from "../config/constants.js";
+import { refreshTokenBalance, userAddress} from "../utils/wallet.js";
 import { executeSwap } from "./swapExecutor.js";
 
 
 // Initialize swap
-export function initSwap() {
+export async function initSwap() {
+    
     // delete swap state on page refresh or change
     resetSwapState();
-    // hook for token modal
+    // hook for input
     hookOnInputIn();
     // event-listeners for input events
     initSwapEvents();
 
-    //rerender on connected wallet
-    window.addEventListener("walletConnected", async () => {
-        await refreshBalances();
-    });
-
+    //rerender on connected wallet, remove old before initializing a new one
+    window.removeEventListener("walletConnected", handleSwapWalletConnected);
+    window.addEventListener("walletConnected", handleSwapWalletConnected);
     // renderswap page based on swapstate
     renderSwap();
 
@@ -29,22 +37,22 @@ export function initSwap() {
 }
 
 
-// Token symbol selection
-export async function setTokenIn(token) {
-    swapState.tokenIn = token;
-    await refreshBalanceIn();
+async function handleSwapWalletConnected() {
+    await refreshBalances();
+}
+
+// Handle token selection from modal
+export async function handleSwapTokenSelected(token, index) {
+    if (index === 0) {
+        swapState.tokenIn = token;
+        await refreshBalanceIn();
+    } else {
+        swapState.tokenOut = token;
+        await refreshBalanceOut();
+    }
     renderSwap();
     updateQuotes();
 }
-
-
-export async function setTokenOut(token) {
-    swapState.tokenOut = token;
-    await refreshBalanceOut();
-    renderSwap();
-    updateQuotes();
-}
-
 
 // Switch input and output token symbols and balances
 export async function switchTokens() {
@@ -55,8 +63,7 @@ export async function switchTokens() {
 
         // refresh display
         await refreshSwap();
-        await refreshBalanceIn();
-        await refreshBalanceOut();
+        await refreshBalances()
 
 }
 
@@ -99,65 +106,39 @@ export async function setSlippage(value) {
 
 
 // Refresh balances
-export function refreshBalances() {
-    refreshBalanceIn();
-    refreshBalanceOut();
+export async function refreshBalances() {
+    await Promise.all([
+        refreshBalanceIn(),
+        refreshBalanceOut()
+     ]);
 }
 
 
-// refresh balance in
+// Refresh balance in
 export async function refreshBalanceIn() {
-    if (!swapState.tokenIn)
-        return;
-
-    swapState.balanceInLoading = true;
-    renderSwap();
-
-    try {
-        swapState.balanceIn =
-            await userBalance(
-                swapState.tokenIn,
-                userAddress
-            );
-    } catch (error) {
-        console.error(
-            "Error loading input balance:",
-            error
-        );
-    } finally {
-        swapState.balanceInLoading = false;
-        renderSwap();
-    }
+    await refreshTokenBalance({
+        token: swapState.tokenIn,
+        requestKey: "swapBalanceIn",
+        setBalance: value => swapState.balanceIn = value,
+        setLoading: value => swapState.balanceInLoading = value,
+        render: renderSwap,
+        label: "Token In"
+    });
 }
 
 
-// refresh balance out
+// Refresh balance out
 export async function refreshBalanceOut() {
-    if (!swapState.tokenOut)
-        return;
-
-    swapState.balanceOutLoading = true;
-
-    renderSwap();
-
-    try {
-        swapState.balanceOut =
-            await userBalance(
-                swapState.tokenOut,
-                userAddress
-            );
-    } catch (error) {
-        console.error(
-            "Error loading output balance:",
-            error
-        );
-
-    } finally {
-        swapState.balanceOutLoading = false;
-
-        renderSwap();
-    }
+    await refreshTokenBalance({
+        token: swapState.tokenOut,
+        requestKey: "swapBalanceOut",
+        setBalance: value => swapState.balanceOut = value,
+        setLoading: value => swapState.balanceOutLoading = value,
+        render: renderSwap,
+        label: "Token Out"
+    });
 }
+
 
 // check for current token input allowance
 export async function refreshAllowance() {
@@ -367,7 +348,7 @@ function getExecutionPrice(amountOut, amountIn, tokenInDecimals, tokenOutDecimal
 }
 
 
-// Hook for token modal
+// Hook for input
 function hookOnInputIn() {
 
     swapState.onInputIn = async (amount) => {

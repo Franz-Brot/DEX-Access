@@ -1,10 +1,11 @@
 import { ethers } from "./ethers.esm.min.js";
 import { defaultTokens } from "../config/tokens.js";
 import { swapState } from "../swap/swapState.js";
-import { renderSwap } from "../swap/swapRenderer.js";
-import { setTokenIn, setTokenOut } from "../swap/swapCore.js";
+import { handleSwapTokenSelected } from "../swap/swapCore.js";
 import { readProvider } from "./readProvider.js";
 import { ERC20_ABI } from "../config/abis.js";
+import { poolsV2State } from "../pools/V2/poolsV2State.js";
+import { handlePoolsV2TokenSelected } from "../pools/V2/poolsV2Core.js";
 
 
 let tokens = [...defaultTokens];
@@ -75,42 +76,52 @@ export function renderTokenList(list = tokens) {
   });
 }
 
-// set selected token and rerender 
-export function selectToken(token) {
+// Set selected token and close modal
+export async function selectToken(token) {
     if (modalState.type === "swap") {
-        if (modalState.index === 0) {
-            setTokenIn(token);
-        } else {
-            setTokenOut(token);
-        }
-        if (typeof swapState.onTokenSelected === "function") {
-            swapState.onTokenSelected();
-        }
-      renderSwap();
+        await handleSwapTokenSelected(token, modalState.index);
+
+    } else if (modalState.type === "poolsV2") {
+        await handlePoolsV2TokenSelected(token, modalState.index);
     }
 
     closeTokenModal();
 }
 
 
-// filter to prevent double token entries
+// Filter to prevent duplicate token entries
 function isTokenAllowed(token) {
+    const selectedTokens = [];
 
-    if (modalState.type === "swap") {
+    switch (modalState.type) {
+        case "swap":
+            if (swapState) {
+                selectedTokens.push(
+                    modalState.index === 0
+                        ? swapState.tokenOut
+                        : swapState.tokenIn
+                );
+            }
+            break;
 
-        if (!swapState) return true;
+        case "poolsV2":
+            if (poolsV2State) {
+                selectedTokens.push(
+                    modalState.index === 0
+                        ? poolsV2State.tokenB
+                        : poolsV2State.tokenA
+                );
+            }
+            break;
 
-        // do not show the same token as token in and token out e.g a swap from DFI to DFI
-        if (modalState.index === 0 && swapState.tokenOut?.address === token.address) {
-            return false;
-        }
-
-        if (modalState.index === 1 && swapState.tokenIn?.address === token.address) {
-            return false;
-        }
+        // further modal types
     }
 
-return true;
+    return !selectedTokens.some(
+        selectedToken =>
+            selectedToken?.address?.toLowerCase() ===
+            token.address?.toLowerCase()
+    );
 }
 
 
@@ -155,13 +166,13 @@ document.addEventListener("click", (e) => {
 
     if (!item) return;
 
-    const token = tokens.find(
-        t =>
-            t.address.toLowerCase() ===
-            item.dataset.address.toLowerCase()
-    );
+        const token = tokens.find(
+            t =>
+                t.address.toLowerCase() ===
+                item.dataset.address.toLowerCase()
+        );
     if (!token) {return;}
-    selectToken(token);
+        selectToken(token);
 });
 }
 
@@ -304,18 +315,36 @@ async function importToken(address) {
         clearInputError();
         clearHasFeeError();
 
+        // clear radio buttons hasFee
+        resetTokenFeeImportForm();
         // update token list
         renderTokenList();
 
     } catch (err) {
-
-        console.log(err);
+        console.error("Token import failed:", err);
+        console.error("Error message:", err?.message);
+        console.error("Error code:", err?.code);
 
         setInputError("Token not found on chain");
-
-        alert("Token not valid");
+        alert(`Token not valid: ${err?.reason || err?.message || "Unknown error"}`);
     }
 }
+
+// reset radio buttons for has Fee form on successful import
+function resetTokenFeeImportForm() {
+    document.querySelectorAll(
+        'input[name="import-tokenFeeRadio"]'
+    ).forEach(radio => {
+        radio.checked = false;
+    });
+
+    const input = document.getElementById("tokenAddressInput");
+
+    if (input) {
+        input.value = "";
+    }
+}
+
 
 // save only custom token to local storage
 function saveTokens() {
@@ -351,4 +380,16 @@ export function closeTokenModal() {
  // reset state
   modalState.type = null;
   modalState.index = null;
+}
+
+// load token modal
+export async function loadTokenModal() {
+    const response = await fetch("../../tokenModal.html");
+    
+    if (!response.ok) {
+        throw new Error(`Failed to load token modal: ${response.status}`);
+    }
+    const html = await response.text();
+
+    document.body.insertAdjacentHTML("beforeend", html);
 }
