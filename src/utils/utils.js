@@ -1,3 +1,10 @@
+/** Latest changes:
+ *  added sortTokensByAddress, getPoolName
+ */
+
+
+// set new timeout for transaction toast from 5 to 10 seconds
+
 import { ERC20_ABI } from "../config/abis.js";
 import { displayDecimals, nativeAddress } from "../config/constants.js";
 import { ethers } from "./ethers.esm.min.js";
@@ -140,13 +147,13 @@ export function showTxToast({ action, hash = null }) {
         toast.appendChild(a);
         }
 
-        setTimeout(() => removeTxToast(id), 5000);
+        setTimeout(() => removeTxToast(id), 10000);
 
     } else if (status === "failed") {
         toast.classList.remove("tx-toast-pending");
         toast.classList.add("tx-toast-failed");
         if (label) label.textContent = "Failed ✗";
-        setTimeout(() => removeTxToast(id), 7000);
+        setTimeout(() => removeTxToast(id), 10000);
     }
 }
 
@@ -175,4 +182,32 @@ export function truncateDecimals(value, decimals = displayDecimals) {
     if (!fraction) return integer;
 
     return `${integer}.${fraction.slice(0, decimals)}`;
+}
+
+
+// Compare token addresses and return them in canonical order
+export function sortTokensByAddress(tokenA, tokenB) {
+    if (!tokenA || !tokenB) return null;
+
+    const addressA = BigInt(tokenA.address);
+    const addressB = BigInt(tokenB.address);
+
+    if (addressA === addressB) {
+        throw new Error("Identical token addresses.");
+    }
+
+    return addressA < addressB
+        ? [tokenA, tokenB]
+        : [tokenB, tokenA];
+}
+
+// Create standardized pool name
+export function getPoolName(tokenA, tokenB) {
+    const sortedTokens = sortTokensByAddress(tokenA, tokenB);
+
+    if (!sortedTokens) return "";
+
+    const [token0, token1] = sortedTokens;
+
+    return `${token0.symbol}-${token1.symbol}`;
 }

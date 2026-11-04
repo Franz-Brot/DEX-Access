@@ -85,3 +85,62 @@ export async function userBalance(currentToken) {
     
     return ethers.utils.formatUnits(rawBalance, decimals);
 }
+
+
+// Track active balance requests
+const balanceRequests = new Map();
+
+
+// Generic token balance refresh
+export async function refreshTokenBalance({
+    token,
+    address = userAddress,
+    requestKey,
+    setBalance,
+    setLoading,
+    render,
+    label = "Token"
+}) {
+    // Create a unique ID for this request
+    const requestId = Symbol();
+
+    // Mark this request as the latest one
+    balanceRequests.set(requestKey, requestId);
+
+    // Check whether this request is still current
+    const isCurrentRequest = () =>
+        balanceRequests.get(requestKey) === requestId;
+
+    // No token or wallet address
+    if (!token || !address) {
+        setBalance("0");
+        setLoading(false);
+        render();
+        return;
+    }
+
+    setLoading(true);
+    render();
+
+    try {
+        const balance = await userBalance(token, address);
+
+        // Ignore outdated responses
+        if (!isCurrentRequest()) return;
+
+        setBalance(balance);
+
+    } catch (error) {
+        // Ignore errors from outdated requests
+        if (!isCurrentRequest()) return;
+
+        console.error(`Error loading ${label} balance:`, error);
+
+    } finally {
+        // Only the latest request may change the loading state
+        if (isCurrentRequest()) {
+            setLoading(false);
+            render();
+        }
+    }
+}

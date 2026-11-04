@@ -1,0 +1,128 @@
+<!--  Latest changes:
+* created page
+* added container elements to have same layout on swap and pool page
+* added div classes ".input-group.pool.tokenA input" and ".input-group.pool.tokenB input" " and ".input-group.pool.tokenLP input"for distinguishing between pool inputs
+-->
+
+<!-- Rerouting to index, when loading pool3v directly -->
+<script>
+    if (window.location.pathname.includes("poolsV3.html")) {
+        window.location.href = "./index.html#/";
+    }
+</script>
+
+<div id="poolPage-v3">
+<!-- Pools input -->
+    <div class="input-box">
+
+        <!-- Token A -->
+        <div class="input-group pool">
+            <div class="input-header">
+                
+                <span>Token A</span>
+
+                <!-- Token A wallet balance -->
+                <div class="balance-container balanceA">
+                    <span class="balance">Balance: 0</span>
+                    <span class="max-btn max-btn-pools">MAX</span>
+                </div>
+            </div>
+
+            <!-- Token A -->
+            <div class="input-body">
+                <input class="input-token A" type="text" maxlength="19" placeholder="0.00000000" />
+                
+                <!-- Token A selection -->
+                <button class="token-btn">
+                    Token A ▼
+                </button>
+            </div>
+        </div>
+
+        <!-- Space for same layout as swap-->
+        <div class="token-switch-container"></div>
+
+        <!-- Token B-->
+        <div class="input-group">
+            <div class="input-header">
+
+                <span>Token B</span>
+
+                <!-- Token B wallet balance -->
+                <div class="balance-container balanceB">
+                    <span class="balance">Balance: 0</span>
+                    <span class="max-btn max-btn-pools">MAX</span>
+                </div>
+            </div>
+
+            <!-- Token B -->
+            <div class="input-body">
+                <input class="input-token B" type="text" maxlength="19" placeholder="0.00000000" />
+
+                <!-- Token B selection -->
+                <button class="token-btn">
+                    Token B ▼
+                </button>
+            </div>
+        </div>
+        
+        <!-- Slippage input -->
+        <div class="slippage-settings">
+            <label>Slippage (%)</label>
+            <input type="text" id="slippageInput" value="0.5" step="0.1" min="0" />
+        </div>
+
+        <!-- Fee tier-->
+        <div class="input-group feeTier">
+
+            <!-- Fee tier segmented control   -->
+            <div class="input-body">
+                <div class="feeTier-switch">
+                    <button class="feeTier-btn " data-version="500">
+                        0.05%
+                    </button>
+
+                    <button class="feeTier-btn active" data-version="3000">
+                        0.3%
+                    </button>
+
+                    <button class="feeTier-btn " data-version="10000">
+                        1.0%
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Lower range-->
+        <div class="input-group lowerRange">
+            <div class="input-header">
+                <span>Lower range</span>
+            </div>
+
+            <!-- Lower Range input  -->
+            <div class="input-body">
+                <input class="input-lowerRange" type="text" maxlength="19" placeholder="0.00000000"/>
+            </div>
+        </div>
+
+        <!-- Upper range-->
+        <div class="input-group upperRange">
+            <div class="input-header">
+                <span>Upper range</span>
+            </div>
+
+            <!-- Upper range input -->
+            <div class="input-body">
+                <input class="input-upperRange" type="text" maxlength="19" placeholder="0.00000000"/>
+            </div>
+        </div>
+
+        <!-- Info Panel -->
+        <div class="pool-info-panel hidden">
+        
+        </div>
+
+        <!-- Interact button-->
+        <button class="interact-btn pool">Add</button>
+    </div>
+</div>

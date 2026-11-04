@@ -1,0 +1,108 @@
+<!--  Latest changes:
+* created page
+* added container elements to have same layout on swap and pool page
+* added div classes ".input-group.pool.tokenA input" and ".input-group.pool.tokenB input" " and ".input-group.pool.tokenLP input"for distinguishing between pool inputs
+-->
+
+<!-- Rerouting to index, when loading pool2v directly -->
+<script>
+    if (window.location.pathname.includes("poolsV2.html")) {
+        window.location.href = "./index.html#/";
+    }
+</script>
+
+ <div id="poolPage-v2">
+    <!-- Pools input -->
+    <div class="input-box">
+
+        <!-- Token A -->
+        <div class="input-group pool tokenA">
+            <div class="input-header">
+                
+                <span>Token A</span>
+
+                <!-- Token A wallet balance -->
+                <div class="balance-container balanceA">
+                    <span class="balance">Balance: 0</span>
+                    <span class="max-btn max-btn-pools">MAX</span>
+                </div>
+            </div>
+
+            <!-- Token A input/ output -->
+            <div class="input-body">
+                <input class="input-token A" type="text" maxlength="19" placeholder="0.00000000" />
+                
+                <!-- Token A selection -->
+                <button class="token-btn">
+                    Token A ▼
+                </button>
+            </div>
+        </div>
+
+        <!-- Space for same layout as swap-->
+        <div class="token-switch-container"></div>
+
+        <!-- Token B-->
+        <div class="input-group pool tokenB">
+            <div class="input-header">
+
+                <span>Token B</span>
+
+                <!-- Token B wallet balance -->
+                <div class="balance-container balanceB">
+                    <span class="balance">Balance: 0</span>
+                    <span class="max-btn max-btn-pools">MAX</span>
+                </div>
+            </div>
+
+            <!-- Token B input/ output -->
+            <div class="input-body">
+                <input class="input-token B" type="text" maxlength="19" placeholder="0.00000000" />
+
+                <!-- Token B selection -->
+                <button class="token-btn">
+                    Token B ▼
+                </button>
+            </div>
+        </div>
+        
+        <!-- Slippage input -->
+        <div class="slippage-settings">
+            <label>Slippage (%)</label>
+            <input type="text" id="slippageInput" value="0.5" step="0.1" min="0" />
+        </div>
+
+        <!-- LP token-->
+        <div class="input-group pool tokenLP">
+            <div class="input-header">
+
+                <span>LP token</span>
+
+                <!-- LP token wallet balance -->
+                <div class="balance-container balanceLP">
+                    <span class="balance">Balance: 0</span>
+                    <span class="max-btn max-btn-pools hidden">MAX</span>
+                </div>
+            </div>
+
+            <!-- LP token input/ output -->
+            <div class="input-body">
+                <input class="input-token LP" type="text" maxlength="19" placeholder="0.00000000" readonly />
+                
+                <!-- Pool name -->
+                <button class="token-btn lp-token-btn" type="button" disabled>
+                    Select Pool
+                </button>
+            </div>
+        </div>
+
+        <!-- Info Panel -->
+        <div class="pool-info-panel hidden">
+
+        
+        </div>
+
+        <!-- Interact button-->
+        <button class="interact-btn pool">Add</button>
+    </div>
+</div>

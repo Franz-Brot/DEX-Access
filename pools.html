@@ -1,0 +1,30 @@
+<!--  Latest changes:
+ *created page with segmented control
+
+-->
+
+<!-- Rerouting to index, when loading pools directly -->
+<script>
+    if (window.location.pathname.includes("pools.html")) {
+        window.location.href = "./index.html#/";
+    }
+</script>
+
+<!-- pools page -->
+<div id="poolPage">
+
+    <!-- segmented control for switching between v2 and v3 -->
+    
+    <div class="version-switch pool">
+        <button class="version-btn pool active" data-version="v2">
+            V2
+        </button>
+
+        <button class="version-btn pool" data-version="v3">
+            V3
+        </button>
+    </div>
+
+    <div id="poolsContent"></div>
+</div>
+

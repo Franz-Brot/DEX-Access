@@ -1,3 +1,7 @@
+/** Latest changes:
+ *  added name, symbol, decimals to V2_Pair_ABI
+ */
+
 // Common wallet and blockchain info
 export const ERC20_ABI = [
     "function approve(address,uint256) returns(bool)",
@@ -16,6 +20,9 @@ export const V2_Factory_ABI = [
 
 
 export const V2_Pair_ABI = [
+    "function name() view returns (string)",
+    "function symbol() view returns (string)",
+    "function decimals() view returns (uint8)",
     "function token0() view returns (address)",
     "function token1() view returns (address)",
     "function getReserves() view returns (uint112,uint112,uint32)",

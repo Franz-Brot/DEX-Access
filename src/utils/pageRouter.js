@@ -1,6 +1,12 @@
+/** Latest changes:
+ * centralized token modal by adding loadTokenModal in swap initPage - swap
+ * added pools page initialization and version loading of pools page
+ * removed unused imports
+ * added updateActiveNav
+ */ 
+
 import { connectWallet } from "./wallet.js";
-import { initTokenModal } from "./tokenModal.js";
-import { provider } from "./wallet.js";
+import { initTokenModal, loadTokenModal } from "./tokenModal.js";
 import { debug } from "./debugUtils.js";
 import { appVersion } from "../config/constants.js";
 
@@ -9,23 +15,32 @@ let currentPage = null;
 
 // Init page
 export async function initPage(page) {
-  const versionElement = document.getElementById("appVersion");
+    updateActiveNav(page);
+    const versionElement = document.getElementById("appVersion");
 
-  if (versionElement) {
-    versionElement.textContent = `${appVersion}`;
-}
+    if (versionElement) {
+        versionElement.textContent = `${appVersion}`;
+    }
 
-  currentPage = page;
-  
-  if (page === "swap") {
-    const module = await import("../swap/swapCore.js");
-    module.initSwap();
-    initTokenModal();
-  }
+    currentPage = page;
 
-  if (page === "main") {
-    // static page
-  }
+    if (page === "swap") {
+        await loadTokenModal();
+        initTokenModal();
+        const module = await import("../swap/swapCore.js");
+        module.initSwap();
+    }
+
+    if (page === "pools") {
+        await loadTokenModal();
+        initTokenModal();
+        initPoolVersionSwitch();
+        await loadPoolsVersion("v2");
+    }
+
+    if (page === "main") {
+        // static page
+    }
 }
 
 
@@ -92,3 +107,72 @@ document.addEventListener("DOMContentLoaded", () => {
 
 // Make the debug() function globally accessible
 window.debug = debug;
+
+
+// load pool page version
+async function loadPoolsVersion(version) {
+    const content = document.getElementById("poolsContent");
+    if (!content) return;
+
+    const file = version === "v3" ? "poolsV3.html" : "poolsV2.html";
+
+    try {
+        const response = await fetch(file);
+
+        if (!response.ok) {
+        throw new Error(`Error loading ${file}`);
+        }
+
+        content.innerHTML = await response.text();
+
+        // Later V2 or V3 init
+        // e.g. initPoolsV2() or initPoolsV3()
+        if (version === "v2") {
+            const module = await import("../pools/V2/poolsV2Core.js");
+            module.initPoolsV2();
+        }
+
+
+    } catch (error) {
+        console.error("Error loading pool page:", error);
+        content.innerHTML = "<p> Not able to load pool page.</p>";
+    }
+}
+
+
+function updateActiveNav(page) {
+    document.querySelectorAll(".nav-links a").forEach(link => {
+        link.classList.remove("active");
+
+        const href = link.getAttribute("href");
+        if (!href) return;
+
+        const linkPage = href
+            .replace(/^#\/?/, "")
+            .split("?")[0]
+            .replace(/\.html$/, "");
+
+        if (linkPage === page) {
+            link.classList.add("active");
+        }
+    });
+}
+
+// init pool page version switch
+function initPoolVersionSwitch() {
+  const buttons = document.querySelectorAll(".version-btn.pool");
+
+  buttons.forEach(button => {
+    button.addEventListener("click", async () => {
+      const version = button.dataset.version;
+
+      // change active button
+      buttons.forEach(btn => {
+        btn.classList.toggle("active", btn === button);
+      });
+
+      // load page version
+      await loadPoolsVersion(version);
+    });
+  });
+}
