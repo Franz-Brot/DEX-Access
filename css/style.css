@@ -1,3 +1,17 @@
+/* Latest changes:  
+* main-notice style updated, desktop and mobile
+* updated timeline-content style width, mobile
+* updated readability on mobile styles
+* removed double font size on version, changed font colour
+* changed margin-bottom of slippage-settings to 15px to have Slippage% and input on same horizontal level
+* added container elements to have same layout on swap and pool page
+* organized for pool and swap related, pool only and swap only related
+* added navbar active for visualizing current page
+* changed input-body input width 70% to max width: 116px
+* added max-width: 100px; to token-btn
+
+*/  
+
 /* =========================================================
    index, header, navbar related
 ========================================================= */  
@@ -13,7 +27,6 @@
         padding: 0;
         height: 100%;
         overflow: hidden;
-
         font-family: 'Inter', sans-serif;
         background-color: #4b444ea6;
     }
@@ -90,6 +103,15 @@
         width: 100%;
     }
 
+    
+    .nav-links a.active {
+        color: #4f46e5;
+    }
+
+    .nav-links a.active::after {
+        width: 100%;
+    }
+
     .connect-wallet {
         flex: 1;
         display: flex;
@@ -147,8 +169,7 @@
         position: fixed;
         right: 20px;
         bottom: 8px;
-        font-size: 11px;
-        color: #777;
+        color: #afabab;
         opacity: 0.7;
         z-index: 9999;
         pointer-events: none;
@@ -156,11 +177,42 @@
     }
 
 /* =========================================================
-   swap related
+   swap and pool related
 ========================================================= */  
-    .input-box {
+.version-switch {
+    height: 44px;
+    display: flex;
+    max-width: 460px;
+    margin: 25px auto 0 auto;
+    padding: 3px;
+    background: #111;
+    border-radius: 20px;
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
+    box-sizing: border-box;
+}
+
+.version-btn {
+    flex: 1;
+    height: 38px;
+    border: none;
+    border-radius: 17px;
+    background: transparent;
+    color: #555;
+    font-size: 15px;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.version-btn.active {
+    background: #2a2a2a;
+    color: #c431c9;
+    font-weight: bold;
+}    
+
+.input-box {
         max-width: 420px;
-        margin: 40px auto;
+        margin: 0 auto;
         padding: 20px;
         background: #111;
         border-radius: 20px;
@@ -181,9 +233,10 @@
         font-size: 12px;
         color: #aaa;
         margin-bottom: 10px;
+        align-items: center;
     }
 
-    .input-body {
+     .input-body {
         display: flex;
         justify-content: space-between;
         align-items: center;
@@ -195,7 +248,7 @@
         outline: none;
         color: white;
         font-size: 22px;
-        width: 70%;
+        width: 60%;
         input::-webkit-outer-spin-button,
         input::-webkit-inner-spin-button {
         -webkit-appearance: none;
@@ -227,6 +280,11 @@
         border-radius: 12px;
         color: white;
         cursor: pointer;
+        max-width: 100px;
+    }
+
+    .lp-token-btn{
+        cursor: default;
     }
 
     .interact-btn {
@@ -303,6 +361,10 @@
         background: #222;
     }
 
+    .input-switch-container {
+        height: 40px;
+    }
+
     .swap-switch {
         width: 40px;
         height: 40px;
@@ -318,10 +380,6 @@
         position: relative;
     }
 
-    .modal {
-        z-index: 1000;
-    }
-
     .swap-switch:hover {
         background: #3a3a3a;
     }
@@ -334,6 +392,7 @@
         margin-top: 15px;
         color: white;
         justify-content: right;
+        margin-bottom: 15px;
     }
 
     .slippage-settings input {
@@ -346,18 +405,137 @@
         justify-items: right;
     }
 
-
     .max-btn {
-        margin-left: 8px;
+        display: inline-block;
+        margin-left: 5px;
+        width: 30px;
+        flex-shrink: 0;
+        text-align: right;
         color: #c431c9;
         font-weight: bold;
         cursor: pointer;
+        box-sizing: border-box;
     }
 
     .max-btn:hover {
         opacity: 0.8;
     }
 
+    .max-btn.hidden {
+        visibility: hidden;
+        pointer-events: none;
+    }
+
+    .balance-container {
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+        min-width: 160px;
+    }
+
+    .info-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        font-size: 13px;
+    }
+
+    .info-label {
+        color: #888;
+    }
+    
+    .info-value {
+        color: #ddd;
+        font-weight: 500;
+        text-align: right;
+        max-width: 60%;
+        word-break: break-all;
+    }
+
+/* =========================================================
+   only swap related
+========================================================= */  
+
+    /* container for version switch button for same layout as pool */
+    .version-switch-container {
+            height: 69px;
+    }
+
+    /* swap info panel */
+    .swap-info-panel {
+        background: #1a1a1a;
+        border-radius: 12px;
+        padding: 12px 16px;
+        margin-top: 10px;
+        margin-bottom: 6px;
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+    }
+    
+    .swap-info-panel.hidden {
+        display: none;
+    }
+
+/* =========================================================
+    only pool related
+========================================================= */ 
+    
+    /* container for token switch button for same layout as swap*/
+    .token-switch-container {
+        height: 10px;
+    }
+
+    #poolPage .input-box {
+        border-top-left-radius: 0;
+        border-top-right-radius: 0;
+    }
+
+    .input-group.feeTier {
+        width: 100%;
+        padding: 1px;
+        gap: 0;
+    }
+
+    .feeTier-switch {
+        display: flex;
+        flex: 1;
+        box-sizing: border-box;
+        height: 44px;
+        max-width: 460px;
+        margin: 0 auto 0 auto;
+        padding: 3px;
+        background: #111;
+        border: 1px solid #444;
+        border-radius: 20px;
+    }
+
+    .feeTier-btn {
+        flex: 1;
+        height: 36px;
+        border: none;
+        border-radius: 17px;
+        background: transparent;
+        color: #555;
+        font-size: 15px;
+        cursor: pointer;
+        transition: 0.2s;
+    }
+
+    .feeTier-btn.active {
+        background: #2a2a2a;
+        color: #c431c9;
+        font-weight: bold;
+    }
+
+
+    /* =========================================================
+        token modal related
+    ========================================================= */ 
+
+    .modal {
+        z-index: 1000;
+    }
 
     .import-token {
         margin-top: 15px;
@@ -436,40 +614,7 @@
         margin-top: 5px;
     }
     
-    /* swap info panel */
-    .swap-info-panel {
-        background: #1a1a1a;
-        border-radius: 12px;
-        padding: 12px 16px;
-        margin-top: 10px;
-        margin-bottom: 6px;
-        display: flex;
-        flex-direction: column;
-        gap: 8px;
-    }
-    
-    .swap-info-panel.hidden {
-        display: none;
-    }
-    
-    .info-row {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        font-size: 13px;
-    }
-    
-    .info-label {
-        color: #888;
-    }
-    
-    .info-value {
-        color: #ddd;
-        font-weight: 500;
-        text-align: right;
-        max-width: 60%;
-        word-break: break-all;
-    }
+
 
 
 /* =========================================================
@@ -619,12 +764,12 @@ main page
     }
 
     .main-notice { 
+        margin-left: 10px;
         width: 50%;
         max-width: 900px;
-        margin: 10px ;
         padding: 30px 9px; 
         background: #494a4d; 
-        border-radius: 8px;
+        border-radius: 15px;
     } 
     
     .notice-label { 
@@ -883,14 +1028,20 @@ task timeline
 
         .input-box {
             max-width: 100%;
-            margin: 12px 0;
-            padding: 16px;
-            border-radius: 16px;
             box-sizing: border-box;
         }
 
-        .token-btn { padding: 10px 12px; font-size: 14px; min-height: 44px; }
-        .interact-btn { padding: 16px; font-size: 20px; min-height: 52px; }
+        .token-btn { 
+            padding: 10px 12px;
+            font-size: 14px; 
+            min-height: 44px; 
+        }
+
+        .interact-btn { 
+            padding: 16px; 
+            font-size: 20px; 
+            min-height: 52px; 
+        }
 
         .modal-content {
             width: 92vw;
@@ -899,27 +1050,49 @@ task timeline
             box-sizing: border-box;
         }
 
-        .swap-switch { width: 44px; height: 44px; }
+        .swap-switch { 
+            width: 40px; 
+            height: 40px; 
+        }
 
-        .slippage-settings input { width: 50px; padding: 8px; font-size: 15px; }
+        .slippage-settings input { 
+            width: 50px; 
+            padding: 8px; 
+        }
 
-        #txToastContainer { bottom: 12px; right: 12px; left: 12px; }
-        .tx-toast { min-width: unset; max-width: 100%; }
+        #txToastContainer { 
+            bottom: 12px; 
+            right: 12px; 
+            left: 12px; 
+        }
+        
+        .tx-toast { 
+            min-width: unset; 
+            max-width: 100%; 
+        }
 
-        .token-item { padding: 13px 10px; font-size: 15px; }
+        .token-item { 
+            padding: 13px 10px; 
+            font-size: 15px; 
+        }
+
         .import-token input,
-        .import-token button { min-height: 44px; font-size: 15px; }
+        .import-token button { 
+            min-height: 44px; 
+            font-size: 15px; 
+        }
     
-
-    /* timeline */
+        /* timeline */
         .timeline-content {
             max-width: 100%;
         }
+
+        /* main*/
+        .main-notice {
+            width: calc(100% - 20px);
+            margin: 10px auto 75px auto;
+            box-sizing: border-box;
+        }
     }
 
-    /* main*/
-    .main-notice {
-        width: calc(100% - 20px);
-        margin: 10px auto 75px auto;
-        box-sizing: border-box;
-    }
+    
