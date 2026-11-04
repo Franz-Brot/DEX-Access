@@ -382,13 +382,15 @@ export function closeTokenModal() {
   modalState.index = null;
 }
 
-// load token modal
+// Load token modal
 export async function loadTokenModal() {
-    const response = await fetch("../../tokenModal.html");
-    
+    const modalUrl = new URL("../../tokenModal.html", import.meta.url);
+    const response = await fetch(modalUrl);
+
     if (!response.ok) {
         throw new Error(`Failed to load token modal: ${response.status}`);
     }
+
     const html = await response.text();
 
     document.body.insertAdjacentHTML("beforeend", html);
